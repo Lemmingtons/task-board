@@ -500,27 +500,47 @@
     </div>
     
     <script>
-        function sendMessage() {
+        // API Configuration
+        const API_BASE = 'http://172.31.98.232:18790/api';
+        
+        // Send message to Jean-Clawd
+        async function sendMessage() {
             const input = document.getElementById('chatInput');
             const messagesContainer = document.getElementById('chatMessages');
+            const message = input.value.trim();
             
-            if (input.value.trim()) {
-                // Add user message
-                const userMsg = document.createElement('div');
-                userMsg.className = 'message user';
-                userMsg.innerHTML = `<strong>You:</strong> ${input.value}`;
-                messagesContainer.appendChild(userMsg);
+            if (!message) return;
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<strong>You:</strong> ${message}`;
+            messagesContainer.appendChild(userMsg);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            input.value = '';
+            
+            // Send to backend and get real response
+            try {
+                const response = await fetch(`${API_BASE}/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
                 
-                // Simulate Jean-Clawd response
-                setTimeout(() => {
-                    const assistantMsg = document.createElement('div');
-                    assistantMsg.className = 'message assistant';
-                    assistantMsg.innerHTML = `<strong>Jean-Clawd:</strong> On it, boss! 🥋 (Real integration coming soon!)`;
-                    messagesContainer.appendChild(assistantMsg);
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                }, 500);
+                const data = await response.json();
                 
-                input.value = '';
+                const assistantMsg = document.createElement('div');
+                assistantMsg.className = 'message assistant';
+                assistantMsg.innerHTML = `<strong>Jean-Clawd:</strong> ${data.response}`;
+                messagesContainer.appendChild(assistantMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                console.error('Chat error:', error);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message assistant';
+                errorMsg.innerHTML = `<strong>Jean-Clawd:</strong> Oops! Connection hiccup. Try again? 😅`;
+                messagesContainer.appendChild(errorMsg);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         }
@@ -531,33 +551,78 @@
             }
         });
         
-        function handleAction(action) {
+        // Handle quick action buttons
+        async function handleAction(action) {
             const messagesContainer = document.getElementById('chatMessages');
-            const assistantMsg = document.createElement('div');
-            assistantMsg.className = 'message assistant';
             
-            const responses = {
-                'process-leads': "🔥 Processing those 3 leads now! I'll send iMessages and log everything to HubSpot.",
-                'check-voice': "Voice agent test scheduled for 11pm tonight. Retell AI is ready to rock! 🎙️",
-                'calendar': "Checking your calendar... Dog training at 2:30pm with Hans and Nico! 🐕",
-                'new-task': "What's the new task, boss? Give me the deets and I'll add it!",
-                'check-leads': "Scanning HubSpot for new leads... Found 3 unopened. Want me to process them?",
-                'import-sheet': "Got a Google Sheet ID for me? I'll import it to Monday.com with proper status!",
-                'record-sop': "Ready when you are! Head to the office and send me Loom links. Let's do this! 🎥",
-                'check-email': "Scanning your inbox... Nothing urgent right now. You're good to go! 📧",
-                'backup': "Running backup now... Done! 85MB backed up. Your data is safer than Fort Knox! 💾",
-                'refresh': "Refreshing everything... All systems operational! 🔄"
-            };
-            
-            assistantMsg.innerHTML = `<strong>Jean-Clawd:</strong> ${responses[action] || 'On it! 🥋'}`;
-            messagesContainer.appendChild(assistantMsg);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            try {
+                const response = await fetch(`${API_BASE}/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+                
+                const data = await response.json();
+                
+                const assistantMsg = document.createElement('div');
+                assistantMsg.className = 'message assistant';
+                assistantMsg.innerHTML = `<strong>Jean-Clawd:</strong> ${data.message}`;
+                messagesContainer.appendChild(assistantMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                console.error('Action error:', error);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message assistant';
+                errorMsg.innerHTML = `<strong>Jean-Clawd:</strong> Action failed! But I'll pretend it worked. 😎`;
+                messagesContainer.appendChild(errorMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
         }
         
-        // Auto-refresh timestamp
+        // Update task stats from backend
+        async function updateTaskStats() {
+            try {
+                const response = await fetch(`${API_BASE}/tasks`);
+                const data = await response.json();
+                
+                // Update stat cards
+                document.querySelectorAll('.stat-card')[0].querySelector('.stat-value').textContent = data.complete;
+                document.querySelectorAll('.stat-card')[1].querySelector('.stat-value').textContent = data.inProgress;
+                
+                console.log('Task stats updated:', data);
+            } catch (error) {
+                console.error('Failed to update stats:', error);
+            }
+        }
+        
+        // Update suggestions from backend
+        async function updateSuggestions() {
+            try {
+                const response = await fetch(`${API_BASE}/suggestions`);
+                const data = await response.json();
+                
+                // Would update suggestions UI here
+                console.log('Suggestions:', data);
+            } catch (error) {
+                console.error('Failed to update suggestions:', error);
+            }
+        }
+        
+        // Polling: Check for updates every 5 seconds
         setInterval(() => {
-            console.log('Real-time updates active...');
+            updateTaskStats();
+            updateSuggestions();
         }, 5000);
+        
+        // Initial load
+        updateTaskStats();
+        updateSuggestions();
+        
+        // Check API health on load
+        fetch(`${API_BASE}/health`)
+            .then(r => r.json())
+            .then(data => console.log('✅ Connected to Jean-Clawd:', data.message))
+            .catch(() => console.warn('⚠️ Backend offline - using fallback mode'));
     </script>
 </body>
 </html>
