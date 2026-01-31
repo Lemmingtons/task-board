@@ -161,7 +161,7 @@
 <body>
     <div class="header">
         <h1>🥋 Jean-Clawd Task Board</h1>
-        <p>Last updated: 2026-01-30 22:15 AEDT | 🔄 Auto-reload enabled</p>
+        <p>Last updated: 2026-01-31 13:44 AEDT | 🔄 Auto-reload enabled</p>
     </div>
     
     <div class="board">
@@ -220,7 +220,7 @@
         <div class="column in-progress">
             <div class="column-header">
                 <span>⚡ In Progress</span>
-                <span class="count">3</span>
+                <span class="count">2</span>
             </div>
             
             <div class="card">
@@ -261,7 +261,7 @@
         <div class="column complete">
             <div class="column-header">
                 <span>✅ Complete</span>
-                <span class="count">7</span>
+                <span class="count">8</span>
             </div>
             
             <div class="card">
@@ -285,6 +285,17 @@
                 <div class="card-meta">Completed: 2026-01-30 21:06</div>
                 <div class="card-notes">
                     Cleaned up 185 RE agent contacts on Monday.com Ballarat board stuck in "Trial Inspection Booked" stage, moved to "Not Called" for proper workflow processing.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Monday.com Lead Lifecycle Automation</div>
+                <div class="card-meta">Completed: 2026-01-31 13:44</div>
+                <div class="card-notes">
+                    <strong>Solved:</strong> Automated import workflow that defaults all new RE agent leads to "Not Called" status (index 0).<br>
+                    <strong>Built:</strong> Import script (scripts/import-re-agents-to-monday.sh) + workflow documentation.<br>
+                    <strong>Result:</strong> No more leads stuck in wrong status - proper defaults at import time.<br>
+                    <strong>Usage:</strong> Share Google Sheet → Jean-Clawd imports with correct status automatically.
                 </div>
             </div>
             
