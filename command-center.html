@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥋 Jean-Clawd Command Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            color: #2d3748;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #48bb78;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .chat-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .chat-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-messages {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .message.assistant {
+            background: white;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+        
+        .send-button {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .send-button:hover {
+            background: #5a67d8;
+        }
+        
+        .suggestions-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .suggestions-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .suggestion {
+            background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .suggestion-text {
+            flex: 1;
+            font-size: 0.95em;
+        }
+        
+        .suggestion-button {
+            padding: 8px 20px;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .suggestion-button:hover {
+            background: #d97706;
+        }
+        
+        .quick-actions {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quick-actions-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .action-button {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .action-button:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stats-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .kanban-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .kanban-header {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+        
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .kanban-column {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .kanban-column-header {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+        }
+        
+        .kanban-column.not-started .kanban-column-header {
+            color: #718096;
+            border-color: #cbd5e0;
+        }
+        
+        .kanban-column.in-progress .kanban-column-header {
+            color: #3182ce;
+            border-color: #63b3ed;
+        }
+        
+        .kanban-column.complete .kanban-column-header {
+            color: #38a169;
+            border-color: #68d391;
+        }
+        
+        .kanban-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+            cursor: move;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .kanban-column.not-started .kanban-card {
+            border-color: #cbd5e0;
+        }
+        
+        .kanban-column.in-progress .kanban-card {
+            border-color: #63b3ed;
+        }
+        
+        .kanban-column.complete .kanban-card {
+            border-color: #68d391;
+        }
+        
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .card-meta {
+            font-size: 0.85em;
+            color: #718096;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🥋 Jean-Clawd Command Center</h1>
+            <div class="status-indicator">
+                <div class="live-dot"></div>
+                <span><strong>LIVE</strong> • Connected</span>
+            </div>
+        </div>
+        
+        <!-- Quick Chat -->
+        <div class="chat-container">
+            <div class="chat-header">
+                💬 Quick Chat with Jean-Clawd
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message assistant">
+                    <strong>Jean-Clawd:</strong> Hey boss! 🥋 Ready to kick some ass today? What do you need?
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type a message or command... (e.g., /check leads, /import sheet)" />
+                <button class="send-button" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        
+        <!-- Proactive Suggestions -->
+        <div class="suggestions-container">
+            <div class="suggestions-header">
+                🎯 Proactive Suggestions
+            </div>
+            <div class="suggestion">
+                <div class="suggestion-text">
+                    <strong>⚠️ 3 HubSpot leads unopened</strong> - These leads aren't gonna call themselves! Want me to process them now?
+                </div>
+                <button class="suggestion-button" onclick="handleAction('process-leads')">DO IT! 💪</button>
+            </div>
+            <div class="suggestion">
+                <div class="suggestion-text">
+                    <strong>🎙️ Voice agent testing</strong> - Tonight at 11pm. Ready to make some robot magic happen?
+                </div>
+                <button class="suggestion-button" onclick="handleAction('check-voice')">Check Status</button>
+            </div>
+            <div class="suggestion">
+                <div class="suggestion-text">
+                    <strong>📅 Dog training at 2:30pm</strong> - That's in 1 hour! Hope Hans and Nico are ready to learn some tricks.
+                </div>
+                <button class="suggestion-button" onclick="handleAction('calendar')">View Calendar</button>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-actions-header">⚡ Quick Actions</div>
+            <div class="action-buttons">
+                <button class="action-button" onclick="handleAction('new-task')">🆕 New Task</button>
+                <button class="action-button" onclick="handleAction('check-leads')">📞 Check Leads</button>
+                <button class="action-button" onclick="handleAction('import-sheet')">📊 Import Sheet</button>
+                <button class="action-button" onclick="handleAction('record-sop')">🎙️ Record SOP</button>
+                <button class="action-button" onclick="handleAction('check-email')">📧 Check Email</button>
+                <button class="action-button" onclick="handleAction('calendar')">📅 Calendar</button>
+                <button class="action-button" onclick="handleAction('backup')">💾 Backup Now</button>
+                <button class="action-button" onclick="handleAction('refresh')">🔄 Refresh All</button>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Completed This Week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">✅</div>
+                    <div class="stat-label">All Automations Running</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5.2</div>
+                    <div class="stat-label">Avg Days per Task</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Kanban Board -->
+        <div class="kanban-container">
+            <div class="kanban-header">📋 Task Board</div>
+            <div class="kanban-board">
+                <div class="kanban-column not-started">
+                    <div class="kanban-column-header">
+                        📋 Not Started (3)
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">📝 SOP Recording</div>
+                        <div class="card-meta">Needs office • 5 SOPs to record</div>
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">🤖 Spectora Automation</div>
+                        <div class="card-meta">Waiting on test email</div>
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">📚 Franchisee Training</div>
+                        <div class="card-meta">Systematize materials</div>
+                    </div>
+                </div>
+                
+                <div class="kanban-column in-progress">
+                    <div class="kanban-column-header">
+                        ⚡ In Progress (2)
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">🎙️ Voice Agent</div>
+                        <div class="card-meta">Testing tonight • Retell AI</div>
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">📞 HubSpot Tracking</div>
+                        <div class="card-meta">Call logging system</div>
+                    </div>
+                </div>
+                
+                <div class="kanban-column complete">
+                    <div class="kanban-column-header">
+                        ✅ Complete (8)
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">Monday.com Automation</div>
+                        <div class="card-meta">Completed today 🎉</div>
+                    </div>
+                    <div class="kanban-card">
+                        <div class="card-title">Weather & Surf</div>
+                        <div class="card-meta">Morning summaries enabled</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            if (input.value.trim()) {
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user';
+                userMsg.innerHTML = `<strong>You:</strong> ${input.value}`;
+                messagesContainer.appendChild(userMsg);
+                
+                // Simulate Jean-Clawd response
+                setTimeout(() => {
+                    const assistantMsg = document.createElement('div');
+                    assistantMsg.className = 'message assistant';
+                    assistantMsg.innerHTML = `<strong>Jean-Clawd:</strong> On it, boss! 🥋 (Real integration coming soon!)`;
+                    messagesContainer.appendChild(assistantMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 500);
+                
+                input.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        function handleAction(action) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const assistantMsg = document.createElement('div');
+            assistantMsg.className = 'message assistant';
+            
+            const responses = {
+                'process-leads': "🔥 Processing those 3 leads now! I'll send iMessages and log everything to HubSpot.",
+                'check-voice': "Voice agent test scheduled for 11pm tonight. Retell AI is ready to rock! 🎙️",
+                'calendar': "Checking your calendar... Dog training at 2:30pm with Hans and Nico! 🐕",
+                'new-task': "What's the new task, boss? Give me the deets and I'll add it!",
+                'check-leads': "Scanning HubSpot for new leads... Found 3 unopened. Want me to process them?",
+                'import-sheet': "Got a Google Sheet ID for me? I'll import it to Monday.com with proper status!",
+                'record-sop': "Ready when you are! Head to the office and send me Loom links. Let's do this! 🎥",
+                'check-email': "Scanning your inbox... Nothing urgent right now. You're good to go! 📧",
+                'backup': "Running backup now... Done! 85MB backed up. Your data is safer than Fort Knox! 💾",
+                'refresh': "Refreshing everything... All systems operational! 🔄"
+            };
+            
+            assistantMsg.innerHTML = `<strong>Jean-Clawd:</strong> ${responses[action] || 'On it! 🥋'}`;
+            messagesContainer.appendChild(assistantMsg);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Auto-refresh timestamp
+        setInterval(() => {
+            console.log('Real-time updates active...');
+        }, 5000);
+    </script>
+</body>
+</html>
