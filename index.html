@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jean-Clawd Task Board 🥋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .column {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .column-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .not-started .column-header {
+            color: #718096;
+            border-color: #cbd5e0;
+        }
+        
+        .in-progress .column-header {
+            color: #3182ce;
+            border-color: #63b3ed;
+        }
+        
+        .complete .column-header {
+            color: #38a169;
+            border-color: #68d391;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .not-started .card {
+            border-color: #cbd5e0;
+        }
+        
+        .in-progress .card {
+            border-color: #63b3ed;
+        }
+        
+        .complete .card {
+            border-color: #68d391;
+        }
+        
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .card-meta {
+            font-size: 0.85em;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+        
+        .card-notes {
+            font-size: 0.9em;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        
+        .priority-high {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .priority-medium {
+            background: #feebc8;
+            color: #c05621;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        
+        .count {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+        
+        .empty {
+            text-align: center;
+            color: #a0aec0;
+            padding: 30px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🥋 Jean-Clawd Task Board</h1>
+        <p>Last updated: 2026-01-30 22:15 AEDT | 🔄 Auto-reload enabled</p>
+    </div>
+    
+    <div class="board">
+        <!-- NOT STARTED -->
+        <div class="column not-started">
+            <div class="column-header">
+                <span>📋 Not Started</span>
+                <span class="count">2</span>
+            </div>
+            
+            <div class="card">
+                <div class="priority-high">HIGH PRIORITY</div>
+                <div class="card-title">Spectora Template Automation - Browser Automation</div>
+                <div class="card-meta">Added: 2026-01-30 22:50 | Updated: 23:02</div>
+                <div class="card-notes">
+                    <strong>Goal:</strong> Automate editing Spectora templates after Ryan clones them<br>
+                    <strong>Approach:</strong> Browser automation (Playwright) - no API available<br>
+                    <strong>Time savings:</strong> 8-10 hours → 20 minutes per franchisee<br>
+                    <strong>Waiting on:</strong> Test email (end of next week)<br>
+                    <strong>Google Tasks:</strong> 3 tasks created (test email, clone templates, provide values)<br>
+                    <strong>Build starts:</strong> Next week after voice agent complete<br>
+                    <strong>Doc:</strong> business/spectora-automation-plan.md
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="priority-medium">MEDIUM PRIORITY</div>
+                <div class="card-title">Franchisee Training Systematisation</div>
+                <div class="card-meta">Added: 2026-01-30</div>
+                <div class="card-notes">
+                    Create structured training materials and potentially automated delivery system for new franchisees.
+                </div>
+            </div>
+        </div>
+        
+        <!-- IN PROGRESS -->
+        <div class="column in-progress">
+            <div class="column-header">
+                <span>⚡ In Progress</span>
+                <span class="count">3</span>
+            </div>
+            
+            <div class="card">
+                <div class="priority-high">🔥 HIGHEST PRIORITY</div>
+                <div class="card-title">AI Voice Agent for Franchise Calls</div>
+                <div class="card-meta">Started: 2026-01-30 21:45 | Night 1: Failed (cron error)</div>
+                <div class="card-notes">
+                    <strong>Goal:</strong> Build AI voice agent to handle initial franchise lead qualification calls<br>
+                    <strong>Last Night:</strong> ❌ Didn't run - cron job had Opus 4.5 specified (not allowed)<br>
+                    <strong>Fix Applied:</strong> ✅ Recreated cron job with default Sonnet 4.5<br>
+                    <strong>Tonight (Night 1 retry):</strong> Research Bland.ai, Vapi.ai, Retell.ai - LATENCY is top priority<br>
+                    <strong>Next:</strong> Platform comparison results, then build prototype<br>
+                    <strong>Doc:</strong> business/voice-agent-project.md
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="priority-high">HIGH PRIORITY</div>
+                <div class="card-title">HubSpot Call Tracking System</div>
+                <div class="card-meta">Added: 2026-01-30</div>
+                <div class="card-notes">
+                    Build system to track calls to franchise leads - who called, when, outcome, follow-up needed. Integration with existing HubSpot workflows.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="priority-high">HIGH PRIORITY</div>
+                <div class="card-title">HubSpot Lead Lifecycle Automation</div>
+                <div class="card-meta">Started: 2026-01-30 | Last update: 21:06</div>
+                <div class="card-notes">
+                    <strong>Status:</strong> Phase 1 complete (bulk cleanup of "Trial Inspection Booked" → "Not Called" for 185 items). Next: Implement scheduled monitoring system.<br>
+                    <strong>Blocker:</strong> Need to decide on scheduling approach (cron vs heartbeat).
+                </div>
+            </div>
+        </div>
+        
+        <!-- COMPLETE -->
+        <div class="column complete">
+            <div class="column-header">
+                <span>✅ Complete</span>
+                <span class="count">7</span>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">HubSpot Skills Installation</div>
+                <div class="card-meta">Completed: 2026-01-30 20:00</div>
+                <div class="card-notes">
+                    Installed hubspot-leads skill (v1.0.1) - can now check leads, send iMessages, log calls, update stages.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Initial Lead Processing</div>
+                <div class="card-meta">Completed: 2026-01-30 20:30</div>
+                <div class="card-notes">
+                    Processed 5 franchise leads - sent iMessages, logged to HubSpot, updated lifecycle stages appropriately.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">HubSpot Data Cleanup - Trial Inspection Booked</div>
+                <div class="card-meta">Completed: 2026-01-30 21:06</div>
+                <div class="card-notes">
+                    Cleaned up 185 contacts stuck in "Trial Inspection Booked" stage, moved to "Not Called" for proper workflow processing.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Google Drive Operations Documentation</div>
+                <div class="card-meta">Completed: 2026-01-30 21:29</div>
+                <div class="card-notes">
+                    Comprehensive review of all franchising and business docs. Created operations-manual.md (19KB) and franchise-process.md (37KB) covering MVVC, structure, protocols, and full franchisee journey. Structured for future knowledge bot (RAG-ready).
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Task Board Auto-Reload System</div>
+                <div class="card-meta">Completed: 2026-01-30 22:15</div>
+                <div class="card-notes">
+                    Built smart polling server with real-time updates. No more manual refresh! Server runs on localhost:8080, checks for changes every 2 seconds, auto-reloads browser when task board updates. Includes start/stop scripts and full documentation.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Franchisee Onboarding Checklist Gap Analysis</div>
+                <div class="card-meta">Completed: 2026-01-30 22:48 | Updated: 23:05</div>
+                <div class="card-notes">
+                    Analyzed Monday.com board (18396515373) vs full operations requirements. Found ~100+ missing items vs 9 tracked. Added 20 high-priority items organized into 5 groups: Spectora, Google, Territory Setup, Systems Access, Website & Marketing. Created Google Task for Ryan to review (due Feb 3). Full doc: business/franchisee-onboarding-checklist-review.md
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Cron Healer Skill - Self-Healing Cron Jobs</div>
+                <div class="card-meta">Completed: 2026-01-31 07:05 | Enabled: 07:10</div>
+                <div class="card-notes">
+                    Created comprehensive skill for automatic cron job diagnosis and fixing. Auto-fixes: model errors, timeouts, JSON issues, cron syntax. <strong>✅ Automatic monitoring ENABLED</strong> - runs every hour, catches and fixes failures automatically. Cost: ~$2-3/month. Location: skills/cron-healer/
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">Weather & Surf Reporting - Morning Summaries</div>
+                <div class="card-meta">Completed: 2026-01-31 07:15</div>
+                <div class="card-notes">
+                    Set up weather reporting for morning summaries (7am daily). Uses wttr.in for Cronulla weather (temp, humidity, wind). Basic surf conditions based on wind direction. For detailed surf reports (swell height/period), would need Brave API or surf API. Location: skills/cronulla-weather/
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
